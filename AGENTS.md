@@ -12,6 +12,7 @@ contributions to `eGovFramework/egovframe-common-components`.
 - `work` is this fork's default integration branch. Develop upstream-bound
   changes on a topic from `main`; develop fork infrastructure on a topic from
   `work`. Open a fork PR against `work` and review its CI before submission.
+- `work` follows `main`: when an upstream release tag appears or a tracked upstream PR merges, open a fork PR merging `main` into `work` and check fork CI before merging. No auto-merge workflow (it would skip fork PR review).
 - Upstream also has 3.9.x, 3.10.x, 4.0.x, 4.1.x, 4.2.x, 4.3.x, 5.0.x and contributor branches. This setup does not change or sync
   those branches; inspect their roles before creating any extra tracks.
 
