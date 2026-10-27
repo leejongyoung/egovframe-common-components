@@ -17,4 +17,10 @@ jobs:
           distribution: temurin
           java-version: '17'
           cache: maven
-      - run: mvn -B -ntp verify --file pom.xml -DskipTests
+      - name: Verify full build without running tests
+        run: mvn -B -ntp verify --file pom.xml -DskipTests
+      - name: Run selected pure tests without a database
+        run: >-
+          mvn -B -ntp test --file pom.xml -DskipTests=false -Ptest
+          -Dtest='TestCopyCollections,TestSessionURLPattern,EgovArticleServiceImplTest_deleteArticleGuard,TestRegistAdministCodeNPlus1,TestRegistInsttCodeNPlus1'
+          -DfailIfNoTests=false
