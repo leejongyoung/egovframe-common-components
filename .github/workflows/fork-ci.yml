@@ -22,5 +22,5 @@ jobs:
       - name: Run selected pure tests without a database
         run: >-
           mvn -B -ntp test --file pom.xml -DskipTests=false -Ptest
-          -Dtest='TestCopyCollections,TestSessionURLPattern,EgovArticleServiceImplTest_deleteArticleGuard,TestRegistAdministCodeNPlus1,TestRegistInsttCodeNPlus1,EgovHtmlSanitizerGoldenTest'
+          -Dtest='TestCopyCollections,TestSessionURLPattern,TestWhiteListLink,BlogTest_JavaParser,EgovArticleDAOTest_JavaParser,EgovArticleServiceImplTest_deleteArticleGuard,EgovArticleServiceImplTest_selectArticleDetailCn_getResultMap,EgovArticleServiceImplTest_selectArticleDetailDefault_getResultMap,EgovArticleServiceImplTest_selectNoticeArticleList_MyBatis,EgovArticleServiceImplTest_updateArticle_MyBatis,TestRegistAdministCodeNPlus1,TestRegistInsttCodeNPlus1,TestMessage,TestPropertyPath,EgovSecurityConfigTest,EgovHtmlSanitizerGoldenTest,AuthenticInterceptorTest,EgovSysHistoryServiceImplTest'
           -DfailIfNoTests=false
