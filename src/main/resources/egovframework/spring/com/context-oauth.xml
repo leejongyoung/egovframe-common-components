@@ -5,27 +5,27 @@
 	<!-- GOOGLE OAuth Configuration -->
 	<bean id="googleAuthVO" class="egovframework.com.ext.oauth.service.OAuthVO">
 		<constructor-arg value="google" /><!-- Service Name -->
-		<constructor-arg value="googleClientID" /><!-- googleClientID -->
-		<constructor-arg value="googleClientSecret" /><!-- googleClientSecret -->
-		<constructor-arg value="http://localhost:8080/auth/google/callback" /><!-- googleRedirectUrl -->
+		<constructor-arg value="${Globals.google.client.id}" /><!-- googleClientID -->
+		<constructor-arg value="${Globals.google.client.secret}" /><!-- googleClientSecret -->
+		<constructor-arg value="${Globals.google.redirect.url}" /><!-- googleRedirectUrl -->
 		<constructor-arg value="profile email" /><!-- googleScope -->
 	</bean>
 	
 	<!-- NAVER OAuth Configuration -->
 	<bean id="naverAuthVO" class="egovframework.com.ext.oauth.service.OAuthVO">
 		<constructor-arg value="naver" /><!-- Service Name -->
-		<constructor-arg value="naverClientID" /><!-- naverClientID -->
-		<constructor-arg value="naverClientSecret" /><!-- naverClientSecret -->
-		<constructor-arg value="http://127.0.0.1:8080/auth/naver/callback" /><!-- naverRedirectUrl -->
+		<constructor-arg value="${Globals.naver.client.id}" /><!-- naverClientID -->
+		<constructor-arg value="${Globals.naver.client.secret}" /><!-- naverClientSecret -->
+		<constructor-arg value="${Globals.naver.redirect.url}" /><!-- naverRedirectUrl -->
 		<constructor-arg value = "profile" /><!-- naverScope -->
 	</bean>
 	
 	<!-- KAKAO OAuth Configuration -->
 	<bean id="kakaoAuthVO" class="egovframework.com.ext.oauth.service.OAuthVO">
 		<constructor-arg value="kakao" /><!-- Service Name -->
-		<constructor-arg value="kakaoClientID" /><!-- kakaoClientID -->
-		<constructor-arg value="kakaoClientSecret" /><!-- kakaoClientSecret -->
-		<constructor-arg value="http://localhost:8080/auth/kakao/callback" /><!-- kakaoRedirectUrl -->
+		<constructor-arg value="${Globals.kakao.client.id}" /><!-- kakaoClientID -->
+		<constructor-arg value="${Globals.kakao.client.secret}" /><!-- kakaoClientSecret -->
+		<constructor-arg value="${Globals.kakao.redirect.url}" /><!-- kakaoRedirectUrl -->
 		<constructor-arg value ="profile_nickname account_email" /><!-- kakaoScope -->
 	</bean>
     
