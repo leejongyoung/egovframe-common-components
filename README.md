@@ -63,9 +63,11 @@ egovframe-common-components
 2. Eclipse IDE 메뉴에서 File>Import… 를 클릭하여 프로젝트를 가져옴
 3. 프로젝트명을 마우스 우클릭하여 Maven > Update Project… > Force Update of Snapshots/Releases 체크 후 Update를 실행함
 4. 공통컴포넌트를 설치한 프로젝트 내에 위치한 `globals.properties`(src/main/resources/egovframework/egovProps/globals.properties) 파일의 데이터베이스 정보를 설정함<img width="912" alt="데이터베이스 설정 화면 - globals.properties 파일" src="https://user-images.githubusercontent.com/51683963/230331068-72ac3ab3-df28-4ac2-a3b5-d1d2e58c6b6b.png">
-5. `globals.properties` 파일의 인증/권한방식 정보를 설정함<img width="600" alt="인증 및 권한방식 설정 화면 - globals.properties 파일" src="https://user-images.githubusercontent.com/51683963/230331630-dd9dc884-0b83-4019-bb81-b162b729d008.png">
-6. 프로젝트명을 마우스 우클릭하여 Run As > Run on Server를 실행함
-7. 브라우저를 통해 공통컴포넌트 서비스를 확인함
+5. **프로젝트 루트에서 암호화 키 초기화 도구를 실행함** — 기본 키 그대로는 어떤 화면으로 접속해도 안내 페이지만 보입니다(아래 [보안 주의사항 1](#1-crypto-암호화-키-변경-algorithmkey--algorithmkeyhash) 참조)
+   - Windows: `init-crypto-key.bat` · Linux/macOS·Git Bash: `./init-crypto-key.sh`
+6. `globals.properties` 파일의 인증/권한방식 정보를 설정함<img width="600" alt="인증 및 권한방식 설정 화면 - globals.properties 파일" src="https://user-images.githubusercontent.com/51683963/230331630-dd9dc884-0b83-4019-bb81-b162b729d008.png">
+7. 프로젝트명을 마우스 우클릭하여 Run As > Run on Server를 실행함
+8. 브라우저를 통해 공통컴포넌트 서비스를 확인함
 
 <img width="600" alt="공통컴포넌트 서비스 실행 화면" src="https://github.com/user-attachments/assets/aad11f93-b9d2-4bcf-bf45-c06365899a5d">
 
@@ -75,28 +77,72 @@ egovframe-common-components
 
 ### 1. Crypto 암호화 키 변경 (`algorithmKey` / `algorithmKeyHash`)
 
-표준프레임워크 Crypto 암호화 서비스는 **국정원 ARIA 암호화 알고리즘** 기반입니다.
+표준프레임워크 Crypto 암호화 서비스는 **국정원 ARIA 암호화 알고리즘** 기반입니다. `egov-crypto-config.properties` 의 `algorithmKey` 기본값 `egovframe` 은 공개된 값이라, 그대로 쓰면 이 키로 암호화한 DB 비밀번호 등을 누구나 풀 수 있습니다. 변경하지 않는 것은 **우리집 도어락 비밀번호를 `1234` 초기값 그대로 사용하는 것과 동일**합니다.
 
-- 아래 파일의 `algorithmKey`, `algorithmKeyHash` **기본값 `egovframe` 을 반드시 다른 값으로 변경**해야 합니다.
-  - `src/main/resources/egovframework/egovProps/conf/egov-crypto-config.properties`
-  - `src/main/resources/egovframework/egovProps/globals.properties` 의 `Globals.File.algorithmKey`
-- 변경하지 않는 것은 **우리집 도어락 비밀번호를 `1234` 초기값 그대로 사용하는 것과 동일**합니다.
-- 참고 자료
-  - [Crypto 위키 가이드](https://www.egovframe.go.kr/wiki/doku.php?id=egovframework:rte5.0:fdl:crypto)
-  - [해시키 생성 소스 샘플 (MakeHashedPassword.java)](https://github.com/eGovFramework/egovframe-common-components/blob/main/src/test/java/egovframework/com/crypto/MakeHashedPassword.java)
+**기본 키 그대로는 서비스되지 않습니다.** 애플리케이션은 기동하지만, 아래 중 하나에 해당하면 키를 초기화하기 전까지 **어떤 주소로 접속해도 "암호화 키 초기화가 필요합니다" 안내 페이지(HTTP 503)** 가 보이고 서버 로그에도 같은 안내가 남습니다. 안내 페이지는 보안상 이유와 조치 방법(키 초기화 도구 실행 → 다시 빌드·재기동)을 브라우저 언어(한국어/영어)로 설명합니다.
+
+- `algorithmKey` 가 기본값(`egovframe`)이다 — 설정 파일 경로가 틀려 실행환경이 기본값으로 대체한 경우 포함
+- `algorithmKeyHash` 가 기본 키의 해시다(키만 바꾸고 해시를 그대로 둔 경우)
+- `algorithmKey` 와 `algorithmKeyHash` 가 서로 맞지 않는다
+
+#### 키 초기화 도구 (권장)
+
+프로젝트 루트에서 실행합니다(Maven 필요).
+
+```
+init-crypto-key.bat          (Windows 명령 프롬프트)
+./init-crypto-key.sh         (Linux · macOS · Git Bash)
+```
+
+옵션 없이 실행하면 키를 **자동 생성**(권장, 무작위 43자)할지 **직접 입력**할지 묻습니다. 도구는 다음을 한 번에 처리합니다.
+
+1. 새 키를 정하고 그 해시(`algorithmKeyHash`)를 계산합니다 — 해시는 키에서 계산되므로 직접 입력하지 않습니다.
+2. `globals.properties` 의 DB 비밀번호(`Globals.*.Password`)를 옛 키로 풀어 **새 키로 다시 암호화**합니다. 키만 바꾸면 이 값들을 풀 수 없어 기동이 실패하므로 함께 바꿔야 합니다.
+3. 원본을 프로젝트 루트 `crypto-key-backup/` 에 백업하고, 해당 줄만 바꾼 뒤 다시 읽어 검증합니다(실패하면 원복).
+
+| 옵션 | 의미 |
+|---|---|
+| (없음) | 자동 생성 / 직접 입력을 묻는다 |
+| `--generate` | 묻지 않고 자동 생성 (CI·Docker 빌드용, `-y` 와 함께) |
+| `--key <값>` / 환경변수 `EGOV_CRYPTO_KEY` | 묻지 않고 이 키 사용 (명령 기록에 남지 않는 환경변수 권장) |
+| `--dry-run` | 바뀔 항목만 보여 주고 파일은 쓰지 않음 |
+| `-y` | 마지막 확인 질문 생략 |
+| `--help` | 전체 옵션 |
+
+- 직접 입력하는 키는 12자 이상, 영문·숫자·기호(공백·한글·역슬래시 제외), 대문자·소문자·숫자·기호 중 3가지 이상이어야 합니다.
+- 입력을 받을 수 없는 환경(CI, `docker build`)에서는 기다리지 않고 바로 실패합니다. `--generate -y` 를 쓰십시오.
+- 이미 초기화된 키는 다시 바꾸지 않습니다. **운영 중인 키를 바꾸면**(`--force`) 게시물 본문에 저장된 웹에디터 이미지 주소처럼 옛 키로 암호화된 데이터는 새 키로 풀리지 않으므로, 먼저 데이터 영향을 확인하십시오.
+- **초기화한 두 설정 파일(`egov-crypto-config.properties`, `globals.properties`)을 공개 저장소에 커밋하지 마십시오.** 자기 프로젝트 저장소에서 아래처럼 제외하는 것을 권장합니다.
+
+```
+# .gitignore (각자의 프로젝트 저장소)
+src/main/resources/egovframework/egovProps/conf/egov-crypto-config.properties
+```
+
+- 참고 자료: [Crypto 위키 가이드](https://www.egovframe.go.kr/wiki/doku.php?id=egovframework:rte5.0:fdl:crypto)
 
 ### 2. 기본 사용자 계정 비밀번호 변경
 
 `script/dml` 의 초기 데이터에는 아래 테스트용 사용자 정보가 포함되어 있습니다. (**ID 대소문자 유의**)
 
-| 구분 | ID | 초기 PW |
-| --- | --- | --- |
-| 일반사용자 | `USER` | `rhdxhd12` |
-| 기업사용자 | `ENTERPRISE` | `rhdxhd12` |
-| 업무사용자1 | `TEST1` | `rhdxhd12` |
-| 업무사용자2 | `webmaster` | `rhdxhd12` |
+| 구분 | ID | 초기 PW | 권한 | 초기 상태 |
+| --- | --- | --- | --- | --- |
+| 업무사용자1 | `TEST1` | `rhdxhd12` | 관리자(ROLE_ADMIN) | **사용 가능** |
+| 일반사용자 | `USER` | `rhdxhd12` | 사용자 | **잠김** |
+| 기업사용자 | `ENTERPRISE` | `rhdxhd12` | 사용자 | **잠김** |
+| 업무사용자2 | `webmaster` | `rhdxhd12` | 관리자(ROLE_ADMIN) | **잠김** |
 
 > 초기 비밀번호 `rhdxhd12` 는 "공통12" 를 영문 자판으로 입력한 값입니다.
+
+모든 계정이 같은 공개 비밀번호를 쓰므로, `TEST1` 을 제외한 세 계정은 **잠긴 상태로** 들어갑니다(`script/dml` 의 `LOCK_AT = 'Y'` — 로그인 인증 제한 `Globals.login.Lock`). 잠긴 계정은 비밀번호가 맞아도 로그인되지 않습니다.
+
+1. `TEST1` 로 로그인해 **비밀번호를 먼저 변경**합니다.
+2. 다른 계정이 필요하면 `TEST1` 로 사용자관리(업무사용자 / 일반회원 / 기업회원) 화면에서 해당 계정의 **로그인 인증 제한(잠금)을 해제**하고 비밀번호를 바꾼 뒤 사용합니다.
+
+초기 비밀번호를 쓰는 계정으로 로그인하면 첫 화면에 **닫을 수 없는 "초기 비밀번호 변경 안내" 팝업**이 뜨고, "지금 즉시 변경하기" 로 사용자 구분에 맞는 비밀번호 변경 화면으로 이동합니다. 비밀번호를 바꾸기 전에는 첫 화면에 올 때마다 다시 뜹니다.
+
+- 판정은 DB 에 저장된 비밀번호 해시를 초기 비밀번호의 해시와 비교합니다(비밀번호는 사용자 ID 를 salt 로 한 SHA-256 이라 계정마다 계산).
+- 초기 비밀번호 목록은 `globals.properties` 의 `Globals.InitialPasswords`(쉼표 구분, 기본 `rhdxhd12`)이며, 비우면 검사하지 않습니다. 사이트에서 발급하는 임시 비밀번호가 있으면 여기에 추가할 수 있습니다.
 
 - 위 계정의 **비밀번호를 반드시 변경**하고, 사용하지 않는 계정은 **삭제**한 후 운영하시기 바랍니다.
 - 개발시 초기값을 그대로 사용할 경우, 그대로 배포까지 이어져서 누구나 알고 있는 계정정보로 시스템에 접근할 수 있어 심각한 보안 위험이 발생합니다.
