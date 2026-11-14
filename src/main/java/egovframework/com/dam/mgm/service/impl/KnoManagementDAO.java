@@ -50,13 +50,7 @@ public class KnoManagementDAO extends EgovComAbstractDAO {
 		return selectOne("KnoManagementDAO.selectKnoManagement", knoManagement);
 	}
 
-	/**
-	 * 지식정보 정보를 신규로 등록한다.
-	 * @param knoManagement 등록할 지식정보 모델
-	 */
-	public void insertKnoManagement(KnoManagement knoManagement) {
-		insert("KnoManagementDAO.insertKnoManagement", knoManagement);
-	}
+
 
 	/**
 	 * 기 등록된 지식정보 정보를 수정한다.
@@ -66,12 +60,6 @@ public class KnoManagementDAO extends EgovComAbstractDAO {
 		update("KnoManagementDAO.updateKnoManagement", knoManagement);
 	}
 
-	/**
-	 * 기 등록된 지식정보 정보를 삭제한다.
-	 * @param knoManagement 삭제할 지식정보 모델
-	 */
-	public void deleteKnoManagement(KnoManagement knoManagement) {
-		delete("KnoManagementDAO.deleteKnoManagement", knoManagement);
-	}
+
 
 }

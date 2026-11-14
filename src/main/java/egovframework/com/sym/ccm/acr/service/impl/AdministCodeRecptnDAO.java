@@ -125,21 +125,7 @@ public class AdministCodeRecptnDAO extends EgovComAbstractDAO {
 		return selectList("AdministCodeRecptnDAO.selectExistingAdministCodes");
 	}
 
-    /**
-	 * 법정동코드 목록을 조회한다.
-     * @param searchVO
-     * @return List(법정동코드 목록)
-     */
-    public List<EgovMap> selectAdministCodeList(AdministCodeRecptnVO searchVO) {
-        return selectList("AdministCodeRecptnDAO.selectAdministCodeRecptnList", searchVO);
-    }
 
-    /**
-	 * 법정동코드 총 개수를 조회한다.
-     * @param searchVO
-     * @return int(법정동코드 총 개수)
-     */
-    public int selectAdministCodeListTotCnt(AdministCodeRecptnVO searchVO) {
-        return (Integer)selectOne("AdministCodeRecptnDAO.selectAdministCodeRecptnListTotCnt", searchVO);
-    }
+
+
 }

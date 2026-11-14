@@ -54,18 +54,4 @@ public interface EgovAdministCodeRecptnService {
      */
     int selectAdministCodeRecptnListTotCnt(AdministCodeRecptnVO searchVO) throws Exception;
 
-	/**
-	 * 법정동코드 목록을 조회한다.
-	 * @param searchVO
-	 * @return List(법정동코드 목록)
-	 * @throws Exception
-	 */
-	List<EgovMap> selectAdministCodeList(AdministCodeRecptnVO searchVO) throws Exception;
-
-    /**
-	 * 법정동코드 총 개수를 조회한다.
-     * @param searchVO
-     * @return int(법정동코드 총 개수)
-     */
-    int selectAdministCodeListTotCnt(AdministCodeRecptnVO searchVO) throws Exception;
 }
