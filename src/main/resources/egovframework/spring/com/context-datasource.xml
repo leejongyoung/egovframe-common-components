@@ -10,6 +10,7 @@
 					<value>classpath:/egovframework/egovProps/globals.properties</value>
 				</list>
 			</property>
+			<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
 			<property name="ignoreUnresolvablePlaceholders" value="true"/>
 		</bean>
 	
