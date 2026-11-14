@@ -66,15 +66,7 @@ public class KnoAppraisalDAO extends EgovComAbstractDAO {
 		return (Integer)selectOne("KnoAppraisalDAO.selectKnoAppraisalExpertCnt", knoAppraisal);
 	}
 
-	/**
-	 * 지식정보평가 정보를 신규로 등록한다.
-	 * @param knoAps - 지식정보평가 model
-	 *
-	 * @param knoAps
-	 */
-	public void insertKnoAppraisal(KnoAppraisal knoAppraisal) {
-		insert("KnoAppraisalDAO.insertKnoAppraisal", knoAppraisal);
-	}
+
 
 	/**
 	 * 기 등록 된 지식정보평가 정보를 수정 한다.
@@ -86,14 +78,6 @@ public class KnoAppraisalDAO extends EgovComAbstractDAO {
 		update("KnoAppraisalDAO.updateKnoAppraisal", knoAppraisal);
 	}
 
-	/**
-	 * 기 등록된 지식정보평가 정보를 삭제한다.
-	 * @param AppraisalknoAps - 지식정보평가 model
-	 *
-	 * @param knoAps
-	 */
-	public void deleteKnoAppraisal(KnoAppraisal knoAppraisal) {
-		delete("KnoAppraisalDAO.deleteKnoAppraisal", knoAppraisal);
-	}
+
 
 }

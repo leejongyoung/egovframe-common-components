@@ -316,20 +316,4 @@ public class EgovInsttCodeRecptnServiceImpl extends EgovAbstractServiceImpl impl
 		return insttCodeRecptnDAO.selectInsttCodeRecptnListTotCnt(searchVO);
 	}
 
-	/**
-	 * 기관코드 목록을 조회한다.
-	 */
-	@Override
-	public List<EgovMap> selectInsttCodeList(InsttCodeRecptnVO searchVO) throws Exception {
-		return insttCodeRecptnDAO.selectInsttCodeList(searchVO);
-	}
-
-	/**
-	 * 기관코드 총 개수를 조회한다.
-	 */
-	@Override
-	public int selectInsttCodeListTotCnt(InsttCodeRecptnVO searchVO) throws Exception {
-		return insttCodeRecptnDAO.selectInsttCodeListTotCnt(searchVO);
-	}
-
 }

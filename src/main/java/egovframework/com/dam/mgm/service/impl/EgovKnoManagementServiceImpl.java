@@ -76,15 +76,7 @@ public class EgovKnoManagementServiceImpl extends EgovAbstractServiceImpl implem
 		return kmt;
 	}
 
-	/**
-	 * 지식정보 정보를 신규로 등록한다.
-	 * @param knoManagement 등록할 지식정보 모델
-	 * @throws Exception 필수 값 누락, 권한 없음, 또는 데이터 접근 오류가 발생한 경우
-	 */
-	@Override
-	public void insertKnoManagement(KnoManagement knoManagement) throws Exception {
-		knoManagementDAO.insertKnoManagement(knoManagement);
-	}
+
 
 	/**
 	 * 기 등록된 지식정보 정보를 수정한다.
@@ -96,14 +88,6 @@ public class EgovKnoManagementServiceImpl extends EgovAbstractServiceImpl implem
 		knoManagementDAO.updateKnoManagement(knoManagement);
 	}
 
-	/**
-	 * 기 등록된 지식정보 정보를 삭제한다.
-	 * @param knoManagement 삭제할 지식정보 모델
-	 * @throws Exception 대상이 존재하지 않거나 권한 없음, 또는 데이터 접근 오류가 발생한 경우
-	 */
-	@Override
-	public void deleteKnoManagement(KnoManagement knoManagement) throws Exception {
-		knoManagementDAO.deleteKnoManagement(knoManagement);
-	}
+
 
 }
