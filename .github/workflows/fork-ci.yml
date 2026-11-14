@@ -17,7 +17,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: com
           MYSQL_USER: com
-          MYSQL_PASSWORD: com
+          MYSQL_PASSWORD: com01
         ports:
           - 3306:3306
         options: >-
@@ -54,9 +54,9 @@ jobs:
           -Dtest='TestCopyCollections,TestSessionURLPattern,TestWhiteListLink,BlogTest_JavaParser,EgovArticleDAOTest_JavaParser,EgovArticleServiceImplTest_deleteArticleGuard,EgovArticleServiceImplTest_selectArticleDetailCn_getResultMap,EgovArticleServiceImplTest_selectArticleDetailDefault_getResultMap,EgovArticleServiceImplTest_selectNoticeArticleList_MyBatis,EgovArticleServiceImplTest_updateArticle_MyBatis,TestRegistAdministCodeNPlus1,TestRegistInsttCodeNPlus1,TestMessage,TestPropertyPath,EgovSecurityConfigTest,EgovHtmlSanitizerGoldenTest,AuthenticInterceptorTest,EgovSysHistoryServiceImplTest'
           -DfailIfNoTests=false
       - name: Run DB-dependent tests
-        run: mvn -B -ntp test --file pom.xml -DskipTests=false -Ptest -DfailIfNoTests=false
-        env:
-          Globals.mysql.Url: jdbc:log4jdbc:mysql://127.0.0.1:3306/com?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8
-          Globals.mysql.UserName: com
-          Globals.mysql.Password: com
-          Globals.mysql.DriverClassName: net.sf.log4jdbc.DriverSpy
+        run: >-
+          mvn -B -ntp test --file pom.xml -DskipTests=false -Ptest -DfailIfNoTests=false
+          -DGlobals.mysql.Url="jdbc:mysql://127.0.0.1:3306/com?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8"
+          -DGlobals.mysql.UserName=com
+          -DGlobals.mysql.Password=com01
+          -DGlobals.mysql.DriverClassName=com.mysql.cj.jdbc.Driver
