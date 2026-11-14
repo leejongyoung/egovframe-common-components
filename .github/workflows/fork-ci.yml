@@ -60,3 +60,4 @@ jobs:
           -DGlobals.mysql.UserName=com
           -DGlobals.mysql.Password=com01
           -DGlobals.mysql.DriverClassName=net.sf.log4jdbc.DriverSpy
+          -Dlog4jdbc.drivers=com.mysql.cj.jdbc.Driver
