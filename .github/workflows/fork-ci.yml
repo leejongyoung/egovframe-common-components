@@ -56,8 +56,7 @@ jobs:
       - name: Run DB-dependent tests
         run: >-
           mvn -B -ntp test --file pom.xml -DskipTests=false -Ptest -DfailIfNoTests=false
-          -DGlobals.mysql.Url="jdbc:log4jdbc:mysql://127.0.0.1:3306/com?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8"
+          -DGlobals.mysql.Url="jdbc:mysql://127.0.0.1:3306/com?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8"
           -DGlobals.mysql.UserName=com
           -DGlobals.mysql.Password=com01
-          -DGlobals.mysql.DriverClassName=net.sf.log4jdbc.DriverSpy
-          -Dlog4jdbc.drivers=com.mysql.cj.jdbc.Driver
+          -DGlobals.mysql.DriverClassName=com.mysql.cj.jdbc.Driver
