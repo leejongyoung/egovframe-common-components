@@ -66,16 +66,6 @@ class EgovKnoAppraisalControllerExpertTest {
 		public int selectKnoAppraisalTotCnt(KnoAppraisalVO searchVO) {
 			throw new UnsupportedOperationException();
 		}
-
-		@Override
-		public void insertKnoAppraisal(KnoAppraisal knoAppraisal) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public void deleteKnoAppraisal(KnoAppraisal knoAppraisal) {
-			throw new UnsupportedOperationException();
-		}
 	}
 
 	private static void login(String uniqId, List<String> authorities) {

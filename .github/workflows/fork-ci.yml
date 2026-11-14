@@ -10,6 +10,21 @@ jobs:
   build:
     if: github.repository == 'leejongyoung/egovframe-common-components'
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: com
+          MYSQL_USER: com
+          MYSQL_PASSWORD: com
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -u root -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
     steps:
       - uses: actions/checkout@v4
       - name: Test fork issue auto-close policy offline
@@ -19,6 +34,18 @@ jobs:
           distribution: temurin
           java-version: '17'
           cache: maven
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h 127.0.0.1 -u root -proot --silent; then
+              echo "MySQL is ready"
+              break
+            fi
+            sleep 2
+          done
+      - name: Initialize MySQL schema
+        run: |
+          mysql -h 127.0.0.1 -u root -proot com < script/ddl/mysql/com_DDL_mysql.sql
       - name: Verify full build without running tests
         run: mvn -B -ntp verify --file pom.xml -DskipTests
       - name: Run selected pure tests without a database
@@ -26,3 +53,10 @@ jobs:
           mvn -B -ntp test --file pom.xml -DskipTests=false -Ptest
           -Dtest='TestCopyCollections,TestSessionURLPattern,TestWhiteListLink,BlogTest_JavaParser,EgovArticleDAOTest_JavaParser,EgovArticleServiceImplTest_deleteArticleGuard,EgovArticleServiceImplTest_selectArticleDetailCn_getResultMap,EgovArticleServiceImplTest_selectArticleDetailDefault_getResultMap,EgovArticleServiceImplTest_selectNoticeArticleList_MyBatis,EgovArticleServiceImplTest_updateArticle_MyBatis,TestRegistAdministCodeNPlus1,TestRegistInsttCodeNPlus1,TestMessage,TestPropertyPath,EgovSecurityConfigTest,EgovHtmlSanitizerGoldenTest,AuthenticInterceptorTest,EgovSysHistoryServiceImplTest'
           -DfailIfNoTests=false
+      - name: Run DB-dependent tests
+        run: mvn -B -ntp test --file pom.xml -DskipTests=false -Ptest -DfailIfNoTests=false
+        env:
+          Globals.mysql.Url: jdbc:log4jdbc:mysql://127.0.0.1:3306/com?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8
+          Globals.mysql.UserName: com
+          Globals.mysql.Password: com
+          Globals.mysql.DriverClassName: net.sf.log4jdbc.DriverSpy
