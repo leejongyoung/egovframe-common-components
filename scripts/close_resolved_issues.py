@@ -43,9 +43,10 @@ def main() -> None:
             pr: gh_json("pr", "view", str(pr), "--repo", UPSTREAM, "--json", "state")["state"]
             for pr in pr_numbers
         }
-        live = {pr: state for pr, state in states.items() if state != "CLOSED"}
-        if live and all(state == "MERGED" for state in live.values()):
-            links = ", ".join(f"#{pr}" for pr in live)
+        # CLOSED is not evidence of a merged change. A rejected/abandoned PR
+        # requires a maintainer to resolve the issue or its tracking links.
+        if states and all(state == "MERGED" for state in states.values()):
+            links = ", ".join(f"#{pr}" for pr in states)
             subprocess.run(
                 ["gh", "issue", "close", str(number), "--repo", FORK,
                  "--comment", f"연결된 업스트림 PR ({links})이 모두 병합되고 체크리스트가 완료되어 닫습니다."],
