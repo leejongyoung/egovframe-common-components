@@ -32,6 +32,7 @@ denylist=(
   .github/workflows/close-resolved-issues.yml
   scripts/open_upstream_pr.sh
   scripts/close_resolved_issues.py
+  scripts/tests/test_close_resolved_issues.py
 )
 
 git fetch origin "$source_branch"
