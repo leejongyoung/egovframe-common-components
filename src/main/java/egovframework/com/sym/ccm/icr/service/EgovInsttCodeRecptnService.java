@@ -54,18 +54,4 @@ public interface EgovInsttCodeRecptnService {
      */
     int selectInsttCodeRecptnListTotCnt(InsttCodeRecptnVO searchVO) throws Exception;
 
-	/**
-	 * 기관코드 목록을 조회한다.
-	 * @param searchVO
-	 * @return List(기관코드 목록)
-	 * @throws Exception
-	 */
-	List<EgovMap> selectInsttCodeList(InsttCodeRecptnVO searchVO) throws Exception;
-
-    /**
-	 * 기관코드 총 개수를 조회한다.
-     * @param searchVO
-     * @return int(기관코드 총 개수)
-     */
-    int selectInsttCodeListTotCnt(InsttCodeRecptnVO searchVO) throws Exception;
 }

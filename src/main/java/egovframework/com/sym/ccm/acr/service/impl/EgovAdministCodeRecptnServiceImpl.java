@@ -292,20 +292,4 @@ public class EgovAdministCodeRecptnServiceImpl extends EgovAbstractServiceImpl
 		return administCodeRecptnDAO.selectAdministCodeRecptnListTotCnt(searchVO);
 	}
 
-	/**
-	 * 법정동코드 목록을 조회한다.
-	 */
-	@Override
-	public List<EgovMap> selectAdministCodeList(AdministCodeRecptnVO searchVO) throws Exception {
-		return administCodeRecptnDAO.selectAdministCodeList(searchVO);
-	}
-
-	/**
-	 * 법정동코드 총 개수를 조회한다.
-	 */
-	@Override
-	public int selectAdministCodeListTotCnt(AdministCodeRecptnVO searchVO) throws Exception {
-		return administCodeRecptnDAO.selectAdministCodeListTotCnt(searchVO);
-	}
-
 }
