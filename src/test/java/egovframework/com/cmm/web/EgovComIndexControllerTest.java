@@ -7,10 +7,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.egovframe.rte.fdl.cmmn.exception.BaseRuntimeException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Proxy;
+
+import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.service.EgovProperties;
+import egovframework.com.cmm.service.EgovUserDetailsService;
+import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.test.EgovAbstractTestJUnit;
 
 /**
@@ -72,10 +76,34 @@ public class EgovComIndexControllerTest extends EgovAbstractTestJUnit {
 		;
 	}
 
-	// 다른 테스트가 EgovUserDetailsHelper 에 남긴 인증 상태에 의존해 실행 순서에 따라 실패한다. #34 에서 추적.
-	@Disabled("실행 순서에 따라 결과가 달라짐(#34)")
+	// #34: 다른 테스트가 남긴 인증 상태에 의존하지 않도록 시드 사용자(USER, GNR)로 인증 상태를 직접 구성하고 끝나면 되돌린다.
 	@Test
 	public void test4setContent() throws BaseRuntimeException, Exception {
+		EgovUserDetailsHelper helper = new EgovUserDetailsHelper();
+		EgovUserDetailsService previous = helper.getEgovUserDetailsService();
+		LoginVO seedUser = new LoginVO();
+		seedUser.setId("USER");
+		seedUser.setUserSe("GNR");
+		seedUser.setUniqId("USRCNFRM_00000000000");
+		helper.setEgovUserDetailsService((EgovUserDetailsService) Proxy.newProxyInstance(
+				getClass().getClassLoader(), new Class<?>[] { EgovUserDetailsService.class }, (proxy, method, args) -> {
+					switch (method.getName()) {
+					case "isAuthenticated":
+						return Boolean.TRUE;
+					case "getAuthenticatedUser":
+						return seedUser;
+					default:
+						return null;
+					}
+				}));
+		try {
+			performSetContent();
+		} finally {
+			helper.setEgovUserDetailsService(previous);
+		}
+	}
+
+	private void performSetContent() throws Exception {
 		mockMvc.perform(get("/EgovContent.do"))
 
 				.andExpect(status().isOk())
