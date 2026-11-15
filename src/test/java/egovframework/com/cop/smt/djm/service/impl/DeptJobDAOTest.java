@@ -663,6 +663,8 @@ public class DeptJobDAOTest extends EgovTestAbstractDAO {
 	public void updateDeptJobBxOrdrAll() {
 		// given
 		final DeptJobBx testDataDeptJobBx = new DeptJobBx();
+		// indictOrdr 를 지정하지 않으면 "INDICT_ORDR >= NULL" 이 되어 갱신 대상이 0건이다.
+		testDataDeptJobBx.setIndictOrdr(1);
 		testDataDeptJobBx(testDataDeptJobBx);
 
 		final DeptJobBxVO deptJobBxVO = new DeptJobBxVO();
