@@ -10,21 +10,6 @@ jobs:
   build:
     if: github.repository == 'leejongyoung/egovframe-common-components'
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: com
-          MYSQL_USER: com
-          MYSQL_PASSWORD: com01
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost -u root -proot"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=10
     steps:
       - uses: actions/checkout@v4
       - name: Test fork issue auto-close policy offline
@@ -34,18 +19,25 @@ jobs:
           distribution: temurin
           java-version: '17'
           cache: maven
-      - name: Wait for MySQL to be ready
+      # 서비스 컨테이너는 mysqld 인자를 줄 수 없다. DDL 은 대문자 테이블명을 만들고 매퍼 SQL 은 소문자를
+      # 쓰므로(Linux 기본 lower_case_table_names=0 에서는 not found) 직접 띄워 1 로 설정한다.
+      - name: Start MySQL (lower_case_table_names=1)
         run: |
-          for i in {1..30}; do
-            if mysqladmin ping -h 127.0.0.1 -u root -proot --silent; then
-              echo "MySQL is ready"
-              break
+          docker run -d --name mysql -p 3306:3306 \
+            -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=com \
+            -e MYSQL_USER=com -e MYSQL_PASSWORD=com01 \
+            mysql:8.0 --lower-case-table-names=1 --character-set-server=utf8mb4
+          for i in $(seq 1 60); do
+            if docker exec mysql mysql -uroot -proot -e "select 1" >/dev/null 2>&1; then
+              echo "MySQL is ready"; exit 0
             fi
             sleep 2
           done
-      - name: Initialize MySQL schema
+          docker logs mysql; exit 1
+      - name: Initialize MySQL schema and seed data
         run: |
-          mysql -h 127.0.0.1 -u root -proot com < script/ddl/mysql/com_DDL_mysql.sql
+          docker exec -i mysql mysql -uroot -proot --default-character-set=utf8mb4 com < script/ddl/mysql/com_DDL_mysql.sql
+          docker exec -i mysql mysql -uroot -proot --default-character-set=utf8mb4 com < script/dml/mysql/com_DML_mysql.sql
       - name: Verify full build without running tests
         run: mvn -B -ntp verify --file pom.xml -DskipTests
       - name: Run selected pure tests without a database
