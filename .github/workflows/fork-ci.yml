@@ -46,12 +46,9 @@ jobs:
           mvn -B -ntp test --file pom.xml -DskipTests=false -Ptest
           -Dtest='TestCopyCollections,TestSessionURLPattern,TestWhiteListLink,BlogTest_JavaParser,EgovArticleDAOTest_JavaParser,EgovArticleServiceImplTest_deleteArticleGuard,EgovArticleServiceImplTest_selectArticleDetailCn_getResultMap,EgovArticleServiceImplTest_selectArticleDetailDefault_getResultMap,EgovArticleServiceImplTest_selectNoticeArticleList_MyBatis,EgovArticleServiceImplTest_updateArticle_MyBatis,TestRegistAdministCodeNPlus1,TestRegistInsttCodeNPlus1,TestMessage,TestPropertyPath,EgovSecurityConfigTest,EgovHtmlSanitizerGoldenTest,AuthenticInterceptorTest,EgovSysHistoryServiceImplTest'
           -DfailIfNoTests=false
-      # EgovComIndexControllerTest#test4setContent 는 다른 테스트가 남긴 SecurityContext(로그인 사용자)에 의존해
-      # 실행 순서에 따라 결과가 달라진다(별도 이슈로 추적). 나머지는 모두 실행한다.
       - name: Run DB-dependent tests
         run: >-
           mvn -B -ntp test --file pom.xml -DskipTests=false -Ptest -DfailIfNoTests=false
-          -Dtest='!EgovComIndexControllerTest#test4setContent'
           -DGlobals.mysql.Url="jdbc:mysql://127.0.0.1:3306/com?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8"
           -DGlobals.mysql.UserName=com
           -DGlobals.mysql.Password=com01
