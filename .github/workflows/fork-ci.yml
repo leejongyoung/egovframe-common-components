@@ -21,12 +21,13 @@ jobs:
           cache: maven
       # 서비스 컨테이너는 mysqld 인자를 줄 수 없다. DDL 은 대문자 테이블명을 만들고 매퍼 SQL 은 소문자를
       # 쓰므로(Linux 기본 lower_case_table_names=0 에서는 not found) 직접 띄워 1 로 설정한다.
+      # 테스트마다 Spring 컨텍스트(커넥션 풀)가 캐시되어 기본 max_connections(151)를 넘으면 "Too many connections" 로 실패한다.
       - name: Start MySQL (lower_case_table_names=1)
         run: |
           docker run -d --name mysql -p 3306:3306 \
             -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=com \
             -e MYSQL_USER=com -e MYSQL_PASSWORD=com01 \
-            mysql:8.0 --lower-case-table-names=1 --character-set-server=utf8mb4
+            mysql:8.0 --lower-case-table-names=1 --character-set-server=utf8mb4 --max-connections=1000
           for i in $(seq 1 60); do
             if docker exec mysql mysql -uroot -proot -e "select 1" >/dev/null 2>&1; then
               echo "MySQL is ready"; exit 0
